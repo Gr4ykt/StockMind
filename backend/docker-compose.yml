@@ -1,0 +1,61 @@
+# mongodb://root:root123.@localhost:27018 -> PARA LOCAL
+# mongodb://root:root123.@mongo_api:27017 -> PARA CONTENEDORES
+
+version: '3.8'
+
+services:
+  mongo_api:
+    image: mongo:latest
+    container_name: mongo_stockMind
+    ports:
+      - "27018:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root123.
+    networks:
+      - service
+
+  user_api:
+    build:
+      context: ./UserAPI
+      dockerfile: Dockerfile
+    container_name: user_api
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./UserAPI/API:/usr/src/app
+    depends_on:
+      - mongo_api
+    networks:
+      - service
+
+  product_api:
+    build:
+      context: ./ProductAPI
+      dockerfile: Dockerfile
+    container_name: product_api
+    ports:
+      - "3002:3000"
+    volumes:
+      - ./ProductAPI/API:/usr/src/app
+    depends_on:
+      - mongo_api
+    networks:
+      - service
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_reverse_proxy
+    ports:
+      - "3000:80"
+    volumes:
+      - ./Nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - user_api
+      - product_api
+    networks:
+      - service
+
+networks:
+  service:
+    driver: bridge
