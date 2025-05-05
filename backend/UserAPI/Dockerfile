@@ -3,6 +3,7 @@ FROM debian:bullseye-slim
 RUN apt-get update && apt-get install -y \
   curl \
   gnupg \
+  netcat \
   ca-certificates \
   && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
   && apt-get install -y nodejs \
@@ -20,4 +21,6 @@ COPY ./API .
 
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+COPY ./API/wait-for-mongo.sh .
+RUN chmod +x wait-for-mongo.sh
+CMD ["./wait-for-mongo.sh"]
