@@ -67,7 +67,11 @@ npm run dev
 
 Once logged in you go to the address `http://localhost:5173/` in the browser.
 ### Images
-[IMAGEN 1]
-[IMAGEN 2]
-[IMAGEN 3]
-[IMAGEN 4]
+![imagen](https://github.com/user-attachments/assets/a74057be-0bfd-4f51-b27b-24a7af577921)
+![imagen](https://github.com/user-attachments/assets/c7e0cd9c-ee3e-4330-9ce0-2e9e25295490)
+![imagen](https://github.com/user-attachments/assets/162925f4-f5ec-46d8-9110-cd349e6ee203)
+![imagen](https://github.com/user-attachments/assets/c2fe267c-ee1d-40c4-a2e1-99c4ce107d6b)
+![imagen](https://github.com/user-attachments/assets/06c92348-d6dd-41eb-9da4-1ef4cb832cfa)
+![imagen](https://github.com/user-attachments/assets/7d42bc58-0cc7-425d-a3ad-0e78ee51759f)
+![imagen](https://github.com/user-attachments/assets/8c1d6032-224b-454b-8062-a4f84b3c38e3)
+![imagen](https://github.com/user-attachments/assets/4c7a9851-5544-44a4-8f89-eb3e82bb177b)
