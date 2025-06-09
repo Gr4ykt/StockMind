@@ -1,0 +1,324 @@
+@import "tailwindcss";
+@import "flowbite/src/themes/default";
+
+/* Variables de colores principales */
+:root {
+  --azul-claro: #E9F1FA;
+  --azul-brillante: #00ABE4;
+  --blanco: #FFFFFF;
+  --azul-medio: #0891B2;
+  --azul-oscuro: #075985;
+  --gris-claro: #F8FAFC;
+  --gris-medio: #64748B;
+  --gradiente-fondo: linear-gradient(135deg, #E9F1FA 0%, #BFDBFE 50%, #E0F2FE 100%);
+}
+
+/* Estilo base con fondo gradiente inspirado en la imagen */
+body {
+  background: var(--gradiente-fondo);
+  background-attachment: fixed;
+  color: var(--azul-oscuro);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Efecto de formas geométricas en el fondo como en la imagen */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(0, 171, 228, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(0, 171, 228, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Encabezado moderno */
+header {
+  background: linear-gradient(135deg, var(--blanco) 0%, var(--azul-claro) 100%);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 171, 228, 0.1);
+  padding: 1.5rem;
+  color: var(--azul-oscuro);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Títulos con mejor jerarquía */
+h1, h2, h3 {
+  color: var(--azul-oscuro);
+  margin-top: 0;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 3rem;
+  background: linear-gradient(135deg, var(--azul-oscuro), var(--azul-brillante));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+h2 {
+  color: var(--azul-medio);
+  font-size: 2rem;
+}
+
+h3 {
+  color: var(--azul-oscuro);
+  font-size: 1.5rem;
+}
+
+/* Texto de párrafo con mejor legibilidad */
+p {
+  color: var(--azul-oscuro);
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+/* Botones principales estilo Drone */
+button, .btn-primary {
+  background: linear-gradient(135deg, var(--azul-brillante), var(--azul-medio));
+  color: var(--blanco);
+  border: none;
+  padding: 0.875rem 2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px 0 rgba(0, 171, 228, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+button:hover, .btn-primary:hover {
+  background: linear-gradient(135deg, var(--azul-medio), var(--azul-oscuro));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px 0 rgba(0, 171, 228, 0.4);
+}
+
+/* Botón secundario */
+.btn-secondary {
+  background: transparent;
+  color: var(--azul-brillante);
+  border: 2px solid var(--azul-brillante);
+  padding: 0.875rem 2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-secondary:hover {
+  background: var(--azul-brillante);
+  color: var(--blanco);
+  transform: translateY(-2px);
+}
+
+/* Tarjetas modernas con efecto glassmorphism */
+section, .card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  margin: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 171, 228, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  transition: all 0.3s ease;
+}
+
+section:hover, .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px 0 rgba(0, 171, 228, 0.15);
+}
+
+/* Hero section especial */
+.hero {
+  background: linear-gradient(135deg, var(--blanco) 0%, var(--azul-claro) 100%);
+  padding: 4rem 2rem;
+  text-align: center;
+  border-radius: 0;
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0, 171, 228, 0.05) 0%, transparent 70%);
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+/* Footer elegante */
+footer {
+  background: linear-gradient(135deg, var(--azul-oscuro), var(--azul-medio));
+  color: var(--azul-claro);
+  text-align: center;
+  padding: 2rem;
+  margin-top: 3rem;
+}
+
+/* Utilidades de texto */
+.text-muted {
+  color: var(--gris-medio);
+}
+
+.text-primary {
+  color: var(--azul-brillante);
+}
+
+.text-secondary {
+  color: var(--azul-medio);
+}
+
+/* Estados de interacción */
+.success {
+  color: #10B981;
+  background-color: rgba(16, 185, 129, 0.1);
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.warning {
+  color: #F59E0B;
+  background-color: rgba(245, 158, 11, 0.1);
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.error {
+  color: #EF4444;
+  background-color: rgba(239, 68, 68, 0.1);
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+/* Navegación moderna */
+nav {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 171, 228, 0.1);
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  color: var(--azul-oscuro);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+nav a:hover {
+  color: var(--azul-brillante);
+}
+
+nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--azul-brillante);
+  transition: width 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+nav a:hover::after {
+  width: 100%;
+}
+
+/* Inputs y formularios */
+input, textarea, select {
+  background: var(--blanco);
+  border: 2px solid var(--azul-claro);
+  border-radius: 8px;
+  padding: 0.75rem;
+  color: var(--azul-oscuro);
+  transition: border-color 0.3s ease;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--azul-brillante);
+  box-shadow: 0 0 0 3px rgba(0, 171, 228, 0.1);
+}
+
+/* Efectos de loading y animaciones sutiles */
+.loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 171, 228, 0.2), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  
+  section, .card {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  nav ul {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  button, .btn-primary, .btn-secondary {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+}

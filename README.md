@@ -4,6 +4,9 @@
     - [Start Backend](#start-backend)
     - [Finalize Backend](#finalize-backend)
   - [Frontend](#frontend)
+    - [Install dependencies](#install-dependencies)
+    - [Run service Frontend](#run-service-frontend)
+    - [Images](#images)
 
 # StockMind
 Inventory management software with integrated AI, intuitive, creative, innovative, a different way to manage your company.
@@ -49,3 +52,22 @@ networks:
 
 ```
 ## Frontend
+### Install dependencies
+To install the ReactJS dependencies just use the following command, remember that the path to the service and which contains the `package.json` file is from the root of the `frontend/Product` directory.
+```bash
+cd frontend/Product
+npm install
+```
+### Run service Frontend
+To start the frontend service is as simple as with the command:
+```bash
+npm run dev
+```
+>Remember to first install the dependencies used with `npm install`.
+
+Once logged in you go to the address `http://localhost:5173/` in the browser.
+### Images
+[IMAGEN 1]
+[IMAGEN 2]
+[IMAGEN 3]
+[IMAGEN 4]
