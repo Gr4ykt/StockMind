@@ -1,5 +1,56 @@
 import React, { useState } from 'react';
 import { Bot, X, Send, MessageCircle } from 'lucide-react';
+import { useIA } from '../context/iaContext';
+
+const formatText = (text) => {
+  if (!text) return '';
+
+  // Reemplazar '\n' y tabular líneas enumeradas
+  const formatted = text
+    .replace(/\\n/g, '\n')                           // Saltos de línea reales
+    .split('\n')                                     // Dividir en líneas
+    .map(line => {
+      const trimmed = line.trimStart();
+      const needsIndent = /^(\d+\.\s|\*)/.test(trimmed);
+      return needsIndent ? '    ' + trimmed : trimmed;  // Agregar 4 espacios si aplica
+    })
+    .join('\n');                                     // Unir líneas de nuevo
+
+  return <pre className='whitespace-pre-wrap' >{formatted}</pre>;
+};
+
+
+// Componente para mostrar los puntos de carga
+const TypingIndicator = () => {
+  return (
+    <div className="flex space-x-1">
+      <div 
+        className="w-2 h-2 rounded-full animate-bounce"
+        style={{ 
+          backgroundColor: '#00ABE4',
+          animationDelay: '0ms',
+          animationDuration: '1.4s'
+        }}
+      ></div>
+      <div 
+        className="w-2 h-2 rounded-full animate-bounce"
+        style={{ 
+          backgroundColor: '#00ABE4',
+          animationDelay: '150ms',
+          animationDuration: '1.4s'
+        }}
+      ></div>
+      <div 
+        className="w-2 h-2 rounded-full animate-bounce"
+        style={{ 
+          backgroundColor: '#00ABE4',
+          animationDelay: '300ms',
+          animationDuration: '1.4s'
+        }}
+      ></div>
+    </div>
+  );
+};
 
 const FloatingChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,12 +63,13 @@ const FloatingChatbot = () => {
     }
   ]);
   const [inputMessage, setInputMessage] = useState('');
+  const { isLoading, sendMessageToIA, error } = useIA();
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
   };
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (inputMessage.trim()) {
       const newMessage = {
         id: messages.length + 1,
@@ -26,24 +78,52 @@ const FloatingChatbot = () => {
         timestamp: new Date()
       };
       
-      setMessages([...messages, newMessage]);
+      setMessages(prev => [...prev, newMessage]);
       setInputMessage('');
       
-      // Simular respuesta del bot después de un breve delay
-      setTimeout(() => {
-        const botResponse = {
-          id: messages.length + 2,
-          text: "Gracias por tu mensaje. Te ayudo con consultas sobre inventario, usuarios y funcionalidades de StockMind.",
-          isBot: true,
-          timestamp: new Date()
-        };
-        setMessages(prev => [...prev, botResponse]);
-      }, 1000);
+      // Agregar mensaje de carga
+      const loadingMessage = {
+        id: messages.length + 2,
+        isLoading: true,
+        isBot: true,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, loadingMessage]);
+      
+      try {
+        // Llamar a la IA
+        const iaResponse = await sendMessageToIA(newMessage.text);
+        
+        // Remover mensaje de carga y agregar respuesta de la IA
+        setMessages(prev => {
+          const filteredMessages = prev.filter(msg => !msg.isLoading);
+          return [...filteredMessages, {
+            id: Date.now(),
+            text: iaResponse.text || 'Lo siento, no pude procesar tu solicitud.',
+            isBot: true,
+            timestamp: new Date()
+          }];
+        });
+        
+      } catch (err) {
+        console.error('Error al obtener respuesta de la IA:', err);
+        
+        // Remover mensaje de carga y mostrar error
+        setMessages(prev => {
+          const filteredMessages = prev.filter(msg => !msg.isLoading);
+          return [...filteredMessages, {
+            id: Date.now(),
+            text: 'Lo siento, hubo un error al procesar tu solicitud. Por favor, intenta nuevamente.',
+            isBot: true,
+            timestamp: new Date()
+          }];
+        });
+      }
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !isLoading) {
       sendMessage();
     }
   };
@@ -100,7 +180,7 @@ const FloatingChatbot = () => {
                   borderLeft: '8px solid transparent',
                   borderRight: '8px solid transparent',
                   borderTop: '8px solid #00ABE4'
-                }}
+                }} 
               ></div>
             </div>
           </div>
@@ -143,7 +223,9 @@ const FloatingChatbot = () => {
               </div>
               <div>
                 <h3 className="font-bold text-lg mb-0">Asistente StockMind</h3>
-                <p className="text-sm opacity-90 mb-0">En línea</p>
+                <p className="text-sm opacity-90 mb-0">
+                  {isLoading ? 'Escribiendo...' : 'En línea'}
+                </p>
               </div>
             </div>
             <button
@@ -181,10 +263,13 @@ const FloatingChatbot = () => {
                     border: message.isBot ? '1px solid #E9F1FA' : 'none',
                     boxShadow: message.isBot 
                       ? '0 2px 8px rgba(0, 171, 228, 0.1)' 
-                      : '0 4px 12px rgba(0, 171, 228, 0.3)'
+                      : '0 4px 12px rgba(0, 171, 228, 0.3)',
+                    minHeight: message.isLoading ? '40px' : 'auto',
+                    display: 'flex',
+                    alignItems: 'center'
                   }}
                 >
-                  {message.text}
+                  {message.isLoading ? <TypingIndicator /> : formatText(message.text)}
                 </div>
               </div>
             ))}
@@ -205,43 +290,56 @@ const FloatingChatbot = () => {
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Escribe tu mensaje..."
+                disabled={isLoading}
                 className="flex-1 text-sm font-medium transition-all duration-200"
                 style={{
-                  background: '#F8FAFC',
+                  background: isLoading ? '#F1F5F9' : '#F8FAFC',
                   border: '2px solid #E9F1FA',
                   borderRadius: '12px',
                   padding: '12px 16px',
                   color: '#075985',
-                  outline: 'none'
+                  outline: 'none',
+                  cursor: isLoading ? 'not-allowed' : 'text'
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = '#00ABE4';
-                  e.target.style.boxShadow = '0 0 0 3px rgba(0, 171, 228, 0.1)';
-                  e.target.style.background = '#FFFFFF';
+                  if (!isLoading) {
+                    e.target.style.borderColor = '#00ABE4';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(0, 171, 228, 0.1)';
+                    e.target.style.background = '#FFFFFF';
+                  }
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = '#E9F1FA';
                   e.target.style.boxShadow = 'none';
-                  e.target.style.background = '#F8FAFC';
+                  e.target.style.background = isLoading ? '#F1F5F9' : '#F8FAFC';
                 }}
               />
               <button
                 onClick={sendMessage}
+                disabled={isLoading || !inputMessage.trim()}
                 className="p-3 rounded-xl transition-all duration-200"
                 style={{
-                  background: 'linear-gradient(135deg, #00ABE4, #0891B2)',
+                  background: (isLoading || !inputMessage.trim()) 
+                    ? '#94A3B8' 
+                    : 'linear-gradient(135deg, #00ABE4, #0891B2)',
                   border: 'none',
-                  cursor: 'pointer',
+                  cursor: (isLoading || !inputMessage.trim()) ? 'not-allowed' : 'pointer',
                   color: '#FFFFFF',
-                  boxShadow: '0 4px 12px rgba(0, 171, 228, 0.3)'
+                  boxShadow: (isLoading || !inputMessage.trim()) 
+                    ? 'none' 
+                    : '0 4px 12px rgba(0, 171, 228, 0.3)'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.transform = 'translateY(-1px)';
-                  e.target.style.boxShadow = '0 6px 16px rgba(0, 171, 228, 0.4)';
+                  if (!isLoading && inputMessage.trim()) {
+                    e.target.style.transform = 'translateY(-1px)';
+                    e.target.style.boxShadow = '0 6px 16px rgba(0, 171, 228, 0.4)';
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.transform = 'translateY(0px)';
-                  e.target.style.boxShadow = '0 4px 12px rgba(0, 171, 228, 0.3)';
+                  if (!isLoading && inputMessage.trim()) {
+                    e.target.style.transform = 'translateY(0px)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(0, 171, 228, 0.3)';
+                  }
                 }}
               >
                 <Send size={18} />

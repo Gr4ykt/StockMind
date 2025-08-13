@@ -1,5 +1,11 @@
 # mongodb://root:root123.@localhost:27018 -> PARA LOCAL
 # mongodb://root:root123.@mongo_api:27017 -> PARA CONTENEDORES
+# mongodb://root:root123.@host.docker.internal:27018 -> PARA FLOWISE
+
+# TESTEAR SOLICITUDES FLOWISE
+# curl -X GET "http://localhost:3000/product/api/flowise/get-products" \
+#  -H "Origin: http://localhost:5001" \
+#  -H "Content-Type: application/json"
 
 version: '3.8'
 
@@ -55,6 +61,7 @@ services:
       - product_api
     networks:
       - service
+    
 
 networks:
   service:

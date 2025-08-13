@@ -12,13 +12,14 @@ import ProductsPage from './pages/ProductsPage.jsx';
 import Navbar from './components/Navbar.jsx';
 import { AuthProvider } from "./context/authContext.jsx";
 import { UserProvider } from "./context/userContext.jsx";
+import { IAProvider } from "./context/iaContext.jsx";
 import { ProductProvider } from "./context/productContext.jsx";
 import ProtectedRouter from './ProtectedRouter.jsx';
 import FloatingChatbot from './components/chatbot.jsx';
-import { useAuth } from './context/authContext.jsx'; // Asegúrate de que tengas este hook
+import { useAuth } from './context/authContext.jsx';
 
 function AppContent() {
-  const { isAuthenticated } = useAuth(); // O como se llame tu estado de autenticación
+  const { isAuthenticated } = useAuth();
 
   return (
     <BrowserRouter>
@@ -50,7 +51,9 @@ function App() {
     <AuthProvider>
       <UserProvider>
         <ProductProvider>
-          <AppContent />
+          <IAProvider>
+            <AppContent />
+          </IAProvider>
         </ProductProvider>
       </UserProvider>
     </AuthProvider>
